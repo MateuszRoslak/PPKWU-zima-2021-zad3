@@ -1,63 +1,43 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import top.jfunc.json.impl.JSONObject;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RestController
-public class ScannerController {
+class GetFileController {
     @GetMapping("/get_file")
     @ResponseBody
-    public String getParam(@RequestParam String string, String filetype) {
+    public String getParam(@RequestParam String string, @RequestParam String filetype) {
+        String scannerApiUrl = "http://localhost:8080/scanner?string=";
+        RestTemplate restTemplate = new RestTemplate();
+        HashMap scannerResponse = restTemplate.getForObject(scannerApiUrl.concat(string), HashMap.class);
 
-        int upperLetters = 0;
-        int lowerLetters = 0;
-        int numbers = 0;
-        int specialChars = 0;
-        int otherChars = 0;
-
-        Pattern upperLettersPattern = Pattern.compile("[A-Z]");
-        Matcher matcher = upperLettersPattern.matcher(string);
-
-        while (matcher.find()) {
-            upperLetters++;
+        switch (filetype){
+            case "json":
+                return scannerResponse.toString();
+            case "csv":
+                String csvResponse = "specialChars, numbers, upperLetters, lowerLetters, otherChars\n";
+                csvResponse = csvResponse.concat(String.valueOf(scannerResponse.get("specialChars"))).concat(",");
+                csvResponse = csvResponse.concat(String.valueOf(scannerResponse.get("numbers"))).concat(",");
+                csvResponse = csvResponse.concat(String.valueOf(scannerResponse.get("upperLetters"))).concat(",");
+                csvResponse = csvResponse.concat(String.valueOf(scannerResponse.get("lowerLetters"))).concat(",");
+                csvResponse = csvResponse.concat(String.valueOf(scannerResponse.get("otherChars")));
+                return csvResponse;
+            case "xml":
+                String xmlResponse = "<?xml version=\"0.8\" encoding=\"UTF-8\" standalone=\"no\"?>";
+                xmlResponse = xmlResponse.concat("<specialChars>").concat(String.valueOf(scannerResponse.get("specialChars"))).concat("</specialChars>");
+                xmlResponse = xmlResponse.concat("<numbers>").concat(String.valueOf(scannerResponse.get("numbers"))).concat("</numbers>");
+                xmlResponse = xmlResponse.concat("<upperLetters>").concat(String.valueOf(scannerResponse.get("upperLetters"))).concat("</upperLetters>");
+                xmlResponse = xmlResponse.concat("<lowerLetters>").concat(String.valueOf(scannerResponse.get("lowerLetters"))).concat("</lowerLetters>");
+                xmlResponse = xmlResponse.concat("<otherChars>").concat(String.valueOf(scannerResponse.get("otherChars"))).concat("</otherChars>");
+                return xmlResponse;
+            default:
+                return "Unsupported file type!";
         }
-
-        Pattern lowerLettersPattern = Pattern.compile("[a-z]");
-        matcher = lowerLettersPattern.matcher(string);
-
-        while (matcher.find()) {
-            lowerLetters++;
-        }
-
-        Pattern numbersPattern = Pattern.compile("[0-9]");
-        matcher = numbersPattern.matcher(string);
-
-        while (matcher.find()) {
-            numbers++;
-        }
-
-        Pattern specialCharsPattern = Pattern.compile("[!@#$%^&*()/+-]");
-        matcher = specialCharsPattern.matcher(string);
-
-        while (matcher.find()) {
-            specialChars++;
-        }
-
-        otherChars = string.length() - upperLetters - lowerLetters - numbers - specialChars;
-
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("upperLetters", upperLetters);
-        jsonObject.put("lowerLetters", lowerLetters);
-        jsonObject.put("numbers", numbers);
-        jsonObject.put("specialChars", specialChars);
-        jsonObject.put("otherChars", otherChars);
-
-        return String.valueOf(jsonObject);
     }
 }
