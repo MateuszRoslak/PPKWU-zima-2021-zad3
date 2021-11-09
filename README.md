@@ -6,7 +6,7 @@ PARAMS:<br>
 string (String)<br>
 filetype (String) [json, csv, xml]<br><br> 
 NOTE: <br>
-Endpoint accepts string and filetype params, then returns file with given type containing meta data about given string in JSON format.<br><br>
+Endpoint accepts string and filetype params, then returns meta data about given string in that filetype format.<br><br>
 EXAMPLES:<br>
 
 JSON:
