@@ -4,7 +4,7 @@ ENDPOINT:<br>
 /get_file (GET) <br><br>
 PARAMS:<br>
 string (String)<br>
-filetype (String) [json, csv, xml]<br><br> 
+filetype (String) [json, csv, xml, txt]<br><br> 
 NOTE: <br>
 Endpoint accepts string and filetype params, then returns meta data about given string in that filetype format.<br><br>
 EXAMPLES:<br>
