@@ -53,3 +53,18 @@ OUTPUT:<br>
             <upperLetters>1</upperLetters>
             <lowerLetters>2</lowerLetters>
             <otherChars>0</otherChars>
+<br><br>
+TXT:
+
+INPUT:<br>
+
+    "string" : Ala123!
+    "filetype" : xml
+
+OUTPUT:<br>
+
+        upperLetters=1
+        lowerLetters=2
+        numbers=3
+        specialChars=1
+        otherChars=0
