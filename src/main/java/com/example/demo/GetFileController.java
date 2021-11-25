@@ -36,6 +36,9 @@ class GetFileController {
                 xmlResponse = xmlResponse.concat("<lowerLetters>").concat(String.valueOf(scannerResponse.get("lowerLetters"))).concat("</lowerLetters>");
                 xmlResponse = xmlResponse.concat("<otherChars>").concat(String.valueOf(scannerResponse.get("otherChars"))).concat("</otherChars>");
                 return xmlResponse;
+            case "txt":
+                String txtResponse = scannerResponse.toString().replace("{", "").replace("}", "").replace(",","\n");
+                return txtResponse;
             default:
                 return "Unsupported file type!";
         }
